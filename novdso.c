@@ -75,10 +75,6 @@ int main() {
     kill(getpid(), SIGSTOP);
     execv("/bin/ls", (char *[]){"ls", "-a", NULL});
   } else {
-    int status;
-    waitpid(child, &status, 0);
-    ptrace(PTRACE_SETOPTIONS, child, 0, PTRACE_O_TRACESYSGOOD | PTRACE_O_TRACEEXEC);
-    ptrace(PTRACE_SYSCALL, child, NULL, NULL);
     traceProcess(child);
   }
   return 0;
