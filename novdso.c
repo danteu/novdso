@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include <sys/ptrace.h>
@@ -58,7 +60,7 @@ void traceProcess(int pid) {
     if (WIFEXITED(status))
       break;
 
-    if (status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC<<8))) {
+    if (status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC << 8))) {
       removeVDSO(pid);
       ptrace(PTRACE_DETACH, pid, NULL, NULL);
       break;
@@ -68,15 +70,26 @@ void traceProcess(int pid) {
   }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+  if (argc < 3) {
+    printf("usage: novdso FILE [ARGV]\n");
+    printf("example: novdso /bin/ls ls -l -i -s -a\n");
+    return 1;
+  }
+
+  char *myfile = argv[1];
+  char **myargv = &argv[2];
+
   pid_t child = fork();
   if (child == 0) {
     ptrace(PTRACE_TRACEME, 0, NULL, NULL);
     kill(getpid(), SIGSTOP);
-    execv("/bin/ls", (char *[]){"ls", "-a", NULL});
+    execvp(myfile, myargv);
   } else {
     traceProcess(child);
   }
+
   return 0;
 }
 
