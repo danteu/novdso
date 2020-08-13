@@ -63,6 +63,8 @@ void traceProcess(int pid) {
     if (status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC << 8))) {
       removeVDSO(pid);
       ptrace(PTRACE_DETACH, pid, NULL, NULL);
+      /* wait for child to exit */
+      while (waitpid(pid, &status, 0) > 0);
       break;
     }
 
