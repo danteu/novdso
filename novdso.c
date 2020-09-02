@@ -73,17 +73,20 @@ void traceProcess(int pid) {
 }
 
 int main(int argc, char *argv[]) {
+  char *myfile;
+  char **myargv;
+  pid_t child;
 
   if (argc < 3) {
-    printf("usage: novdso FILE [ARGV]\n");
-    printf("example: novdso /bin/ls ls -l -i -s -a\n");
+    printf("usage: novdso FILE name-of-executable [ARGV]\n");
+    printf("example: novdso /bin/ls /bin/ls -l -i -s -a\n");
     return 1;
   }
 
-  char *myfile = argv[1];
-  char **myargv = &argv[2];
+  myfile = argv[1];
+  myargv = &argv[2];
 
-  pid_t child = fork();
+  child = fork();
   if (child == 0) {
     ptrace(PTRACE_TRACEME, 0, NULL, NULL);
     kill(getpid(), SIGSTOP);
@@ -94,4 +97,3 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
-

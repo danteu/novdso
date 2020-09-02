@@ -1,5 +1,5 @@
 novdso:
-	cc -Wall -Wextra -pedantic -g -o novdso novdso.c
+	cc -Wall -Wextra -Werror -pedantic-errors -o novdso novdso.c
 
 clean:
 	-rm novdso
