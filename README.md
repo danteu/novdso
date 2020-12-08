@@ -64,7 +64,7 @@ strace: Process 25215 attached
 Finally, order to continue the paused process, a SIGCONT has to be raised:
 
 ```
-kill -SIGCONT 25215
+$ kill -SIGCONT 25215
 ```
 
 The process is now unpaused and can be traced as usual.
