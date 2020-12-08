@@ -82,8 +82,8 @@ int main(int argc, char *argv[]) {
   pid_t child;
 
   if (argc < 3) {
-    printf("usage: novdso FILE name-of-executable [ARGV]\n");
-    printf("example: novdso /bin/ls /bin/ls -l -i -s -a\n");
+    printf("usage: novdso FILE ARGV...\n");
+    printf("example: novdso /bin/ls ls -l -i -s -a\n");
     return 1;
   }
 
