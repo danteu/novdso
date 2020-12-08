@@ -48,8 +48,8 @@ void removeVDSO(int pid) {
  * traceProcess() waits for execve(2) to return, calls removeVDSO() and
  * detaches from the child afterwards.
  */
-void traceProcess(int pid) {
-  int status;
+int traceProcess(int pid) {
+  int status, exitStatus;
 
   waitpid(pid, &status, 0);
   ptrace(PTRACE_SETOPTIONS, pid, 0, PTRACE_O_TRACESYSGOOD | PTRACE_O_TRACEEXEC);
@@ -62,7 +62,9 @@ void traceProcess(int pid) {
 
     if (status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC << 8))) {
       removeVDSO(pid);
+      kill(pid, SIGSTOP);
       ptrace(PTRACE_DETACH, pid, NULL, NULL);
+      printf("--- Process paused and detached. PID: %i ---\n", pid);
       /* wait for child to exit */
       while (waitpid(pid, &status, 0) > 0);
       break;
@@ -70,11 +72,13 @@ void traceProcess(int pid) {
 
     ptrace(PTRACE_SYSCALL, pid, NULL, NULL);
   }
+  exitStatus = WEXITSTATUS(status);
+  return exitStatus;
 }
 
 int main(int argc, char *argv[]) {
-  char *myfile;
-  char **myargv;
+  char *myfile, **myargv;
+  int exitStatus;
   pid_t child;
 
   if (argc < 3) {
@@ -92,8 +96,8 @@ int main(int argc, char *argv[]) {
     kill(getpid(), SIGSTOP);
     execvp(myfile, myargv);
   } else {
-    traceProcess(child);
+    exitStatus = traceProcess(child);
   }
 
-  return 0;
+  return exitStatus;
 }
