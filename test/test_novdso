@@ -1,0 +1,30 @@
+#!/usr/bin/env -S expect -f
+
+# With novdso, we expect that a time(2) call can be seen in the strace log
+
+spawn ../novdso ./time test_app
+set pid_novdso $spawn_id
+
+expect {
+	-i $pid_novdso 
+	-re "--- Process paused and detached\. PID: (\\d+) ---" {
+		set pid_test_proc $expect_out(1,string)
+	}
+}
+
+spawn strace -p $pid_test_proc
+set pid_strace $spawn_id
+
+expect {
+	-i $pid_strace
+	-re "--- stopped by SIGSTOP ---"
+}
+
+spawn kill -SIGCONT $pid_test_proc
+
+expect {
+	-i $pid_strace
+	-re "time\\\(.*=.*" {exit 0}
+}
+
+exit 1

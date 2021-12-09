@@ -1,7 +1,16 @@
-novdso:
-	cc -Wall -Wextra -Werror -pedantic-errors -o novdso novdso.c
+.DEFAULT_GOAL := all
+.PHONY : clean test all
 
-clean:
+CCFLAGS := -Wall -Wextra -Werror -pedantic-errors
+
+novdso : novdso.c
+	cc $(CFLAGS) -o $@ $<
+
+test : novdso
+	cd ./test/ && make
+
+clean :
 	-rm novdso
+	-cd ./test/ && make clean
 
-all: novdso
+all : novdso test

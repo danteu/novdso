@@ -1,0 +1,18 @@
+#!/usr/bin/env -S expect -f
+
+# If vdso is activated we expect not to see a time(2) syscall in the strace log
+
+spawn strace ./time
+
+expect {
+	-re "time\\\(.*=.*" { exit 1 }
+	timeout { exit 1 }
+}
+
+catch wait result
+
+if {[lindex $result 3] == 0} {
+	exit 0
+}
+
+exit 1
