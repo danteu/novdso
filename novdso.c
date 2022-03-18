@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 
   if (argc < 3) {
     printf("usage: novdso FILE ARGV...\n");
-    printf("example: novdso /bin/ls ls -l -i -s -a\n");
+    printf("example: novdso /bin/ls /bin/ls -l -i -s -a\n");
     return 1;
   }
 
