@@ -34,7 +34,7 @@ make
 
 ```
 usage: novdso FILE ARGV...
-example: novdso /bin/ls ls -l -i -s -a
+example: novdso /bin/ls /bin/ls -l -i -s -a
 ```
 
 ### Example
