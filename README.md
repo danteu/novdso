@@ -11,7 +11,7 @@ invisible to ptrace.
 The AT_SYSINFO_EHDR field in the auxiliary vector of a process points to the
 vDSO memory area mapped by the kernel.
 
-```
+```bash
 man 7 vdso
 ```
 
@@ -26,13 +26,14 @@ Compatible with amd64 machines.
 
 ## Build
 
-```
+```bash
 make
 ```
 
 ## Usage
 
-```
+```bash
+$ novdso
 usage: novdso FILE ARGV...
 example: novdso /bin/ls /bin/ls -l -i -s -a
 ```
@@ -42,20 +43,18 @@ example: novdso /bin/ls /bin/ls -l -i -s -a
 Assume one wanted to evaluate the syscalls issued by `ls` with vDSO disabled,
 one would run novdso as follows:
 
-```
-$ novdso /bin/ls /bin/ls -l -i -s -a
+```bash
+novdso /bin/ls /bin/ls -l -i -s -a
 ```
 
 Once the following output occurs, the process is SIGSTOPed and novdso waits
 for the process state to change:
 
-```
---- Process paused and detached. PID: 25215 ---
-```
+> --- Process paused and detached. PID: 25215 ---
 
 The process can now be seized by strace:
 
-```
+```bash
 $ strace -p 25215
 strace: Process 25215 attached
 --- stopped by SIGSTOP ---
@@ -63,8 +62,8 @@ strace: Process 25215 attached
 
 Finally, order to continue the paused process, a SIGCONT has to be raised:
 
-```
-$ kill -SIGCONT 25215
+```bash
+kill -SIGCONT 25215
 ```
 
 The process is now unpaused and can be traced as usual.
