@@ -7,7 +7,7 @@ test : time
 	@echo "Test vdso..."
 	@./test_vdso > test_out.txt
 	@echo "Test novdso..."
-	@./test_novdso >> test_out.txt
+	@NOVDSO_PTRACER_ANY= ./test_novdso >> test_out.txt
 	@echo "Success!"
 
 time : time.c

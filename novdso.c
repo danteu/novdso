@@ -5,6 +5,7 @@
 #include <sys/ptrace.h>
 #include <sys/wait.h>
 #include <sys/reg.h>
+#include <sys/prctl.h>
 
 /* from <asm/auxvec.h> */
 #define AT_NULL 0
@@ -81,17 +82,19 @@ int main(int argc, char *argv[]) {
   int exitStatus;
   pid_t child;
 
-  if (argc < 3) {
-    printf("usage: novdso FILE ARGV...\n");
+  if (argc < 2) {
+    printf("usage: novdso FILE [ARGV]...\n");
     printf("example: novdso /bin/ls /bin/ls -l -i -s -a\n");
     return 1;
   }
 
   myfile = argv[1];
-  myargv = &argv[2];
+  myargv = (argc >= 2) ? &argv[2] : NULL;
 
   child = fork();
   if (child == 0) {
+    if (getenv("NOVDSO_PTRACER_ANY"))
+      prctl(PR_SET_PTRACER, PR_SET_PTRACER_ANY);
     ptrace(PTRACE_TRACEME, 0, NULL, NULL);
     kill(getpid(), SIGSTOP);
     execvp(myfile, myargv);
