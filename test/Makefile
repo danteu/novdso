@@ -3,12 +3,13 @@
 CCFLAGS := -Wall -Wextra -Werror -pedantic-errors
 
 EXPECT_INSTALLED := $(shell command -v expect 2> /dev/null)
+STRACE_INSTALLED := $(shell command -v strace 2> /dev/null)
 
 test : time
-ifndef EXPECT_INSTALLED
-	@echo "'expect' is not installed, test skipped!"
+ifeq ($(and $(EXPECT_INSTALLED),$(STRACE_INSTALLED)),)
+	@echo "Missing 'expect' or 'strace', tests skipped!"
 else
-	@echo "Writing test log to './test_out.txt'"
+	@echo "Writing test log to '$(CURDIR)/test_out.txt'"
 	@echo "Test vdso..."
 	@./test_vdso > test_out.txt
 	@echo "Test novdso..."

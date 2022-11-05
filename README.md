@@ -60,7 +60,7 @@ strace: Process 25215 attached
 --- stopped by SIGSTOP ---
 ```
 
-Finally, order to continue the paused process, a SIGCONT has to be raised:
+Finally, in order to continue the paused process, a SIGCONT has to be raised:
 
 ```bash
 kill -SIGCONT 25215

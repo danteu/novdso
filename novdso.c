@@ -1,16 +1,21 @@
+#ifndef linux
+  #error Unsupported Operating System.
+#endif
+
+#ifndef __x86_64__
+  #error Unsupported Architecture.
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <sys/ptrace.h>
-#include <sys/wait.h>
-#include <sys/reg.h>
+#include <sys/auxv.h>
 #include <sys/prctl.h>
+#include <sys/ptrace.h>
+#include <sys/reg.h>
+#include <sys/wait.h>
 
-/* from <asm/auxvec.h> */
-#define AT_NULL 0
-#define AT_IGNORE 1
-#define AT_SYSINFO_EHDR 33
 
 /*
  * removeVDSO() alters the auxiliary table of a newly created process in order
@@ -27,7 +32,7 @@ void removeVDSO(int pid) {
   zeroCount = 0;
   while (zeroCount < 2) {
     val = ptrace(PTRACE_PEEKDATA, pid, pos += 8, NULL);
-    if (val == 0)
+    if (val == AT_NULL)
       zeroCount++;
   }
 
