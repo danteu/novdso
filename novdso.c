@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include <sys/auxv.h>
 #include <sys/prctl.h>
@@ -97,6 +98,8 @@ int main(int argc, char *argv[]) {
   myargv = (argc >= 2) ? &argv[2] : NULL;
 
   child = fork();
+  assert(child > -1);
+
   if (child == 0) {
     if (getenv("NOVDSO_PTRACER_ANY"))
       prctl(PR_SET_PTRACER, PR_SET_PTRACER_ANY);
