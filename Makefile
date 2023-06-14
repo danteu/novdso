@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := all
 .PHONY : clean test all
 
-CCFLAGS := -Wall -Wextra -Werror -pedantic-errors
+CFLAGS := -Wall -Wextra -Werror -pedantic-errors
 
 novdso : novdso.c
 	cc $(CFLAGS) -o $@ $<
