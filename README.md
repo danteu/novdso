@@ -78,3 +78,5 @@ NOVDSO_PTRACER_ANY= novdso /bin/ls /bin/ls -l -i -s -a
 ```
 
 By doing so, the wrapped process can now be traced by any process running under the same UID.
+Note that this only works for ptrace scope levels `0`, where it is irrelevant, and `1`.
+For further information on this topic, refer to the [kernel documentation](https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html).
